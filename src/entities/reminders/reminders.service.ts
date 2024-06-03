@@ -17,8 +17,21 @@ export class RemindersService {
     return await this.remindersRepository.save(result);
   }
 
-  findAll() {
-    return `This action returns all reminders`;
+  async findAll() {
+    const data = await this.remindersRepository.find({
+      select: [
+        'title',
+        'body',
+        'author',
+        'dateAction',
+        'dateCreate',
+        'id',
+        'priorityType',
+        'status',
+        'typeAction',
+      ],
+    });
+    return data;
   }
 
   findOne(id: number) {
