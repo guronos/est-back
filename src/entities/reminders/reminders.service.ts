@@ -12,8 +12,9 @@ export class RemindersService {
     private readonly remindersRepository: Repository<Reminders>,
   ) {}
 
-  public async create(createReminderDto: CreateReminderDto) {
-    const result = this.remindersRepository.create(createReminderDto);
+  public async create(createReminder: CreateReminderDto) {
+    console.log(createReminder);
+    const result = await this.remindersRepository.create(createReminder);
     return await this.remindersRepository.save(result);
   }
 
@@ -26,6 +27,7 @@ export class RemindersService {
         'dateAction',
         'dateCreate',
         'id',
+        'user',
         'priorityType',
         'status',
         'typeAction',

@@ -30,7 +30,7 @@ export class Reminders {
   author: number;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @ManyToOne((type) => User, (user) => user.reminders)
+  @ManyToOne(() => User, (user) => user.reminders)
   user: User;
 
   // @OneToOne((type) => User, (user) => user.reminders)

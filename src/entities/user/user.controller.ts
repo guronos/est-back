@@ -6,9 +6,9 @@ import {
   Post,
   Body,
   Put,
-  Patch,
+  // Patch,
   Param,
-  Delete,
+  // Delete,
   ParseIntPipe,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
@@ -65,6 +65,6 @@ export class UserController {
     });
   }
 
-  @Patch('/:id')
-  async updateUserField(@Req() req: Request, @Res() res: Response) {}
+  // @Patch('/:id')
+  // async updateUserField(@Req() req: Request, @Res() res: Response) {}
 }

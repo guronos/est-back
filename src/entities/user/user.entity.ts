@@ -10,11 +10,14 @@ export class User {
   @Column({ name: 'login', type: 'varchar' })
   login: string;
 
-  @Column({ name: 'email', type: 'varchar' })
+  @Column({ name: 'email', type: 'varchar', unique: true })
   email: string;
 
   @Column({ name: 'phone', type: 'varchar' })
   phone: string;
+
+  @Column({ name: 'phoneUponReg', type: 'varchar' })
+  phoneUponReg: string;
 
   @Column({ name: 'password', type: 'varchar' })
   password: string;
@@ -38,6 +41,6 @@ export class User {
   isAcceptedCookies: boolean;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @OneToMany((type) => Reminders, (reminder) => reminder.user)
+  @OneToMany(() => Reminders, (reminder) => reminder.user)
   reminders: Reminders[];
 }
