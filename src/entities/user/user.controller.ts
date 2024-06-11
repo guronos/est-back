@@ -20,7 +20,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
-  async getAllUsers(@Req() req: Request, @Res() res: Response) {
+  async getAllUsers(@Req() req: any, @Res() res: Response) {
+    console.log(req.user)
     const users = await this.userService.getAllUsers();
     return res.send({
       status: 'ok',
