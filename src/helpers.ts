@@ -1,4 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const pepperIt = (food, shaker) => {
   const array = shaker.split('');
@@ -32,3 +33,10 @@ const getPepper = (arr) => {
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const NonAuth = () => SetMetadata(IS_PUBLIC_KEY, true);
+
+export const Cookies = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return data ? request.cookies?.[data] : request.cookies;
+  },
+);

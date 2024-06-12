@@ -4,9 +4,11 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { NonAuth } from 'src/helpers';
+import { Cookies, NonAuth } from 'src/helpers';
+import { Auth_Data_DTO } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,8 +16,12 @@ export class AuthController {
 
   @NonAuth()
   @Post()
-  async signIn(@Body() authData) {
-    console.log(authData);
+  async signIn(
+    @Res({ passthrough: true }) res,
+    @Body() authData: Auth_Data_DTO,
+    @Cookies() cookies: any,
+  ) {
+    console.log('cookie', cookies);
     const { email, password } = authData;
     const isAuth = await this.authService.signIn(email, password);
     if (!isAuth) {
@@ -23,7 +29,14 @@ export class AuthController {
         'Неверный логин или пароль',
         HttpStatus.UNAUTHORIZED,
       );
+    } else {
+      res.cookie('name', String('Ivan'), {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 50, // 1 week
+        secure: true,
+      });
     }
+    console.log('cookie', cookies);
     return isAuth;
   }
 }

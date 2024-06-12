@@ -21,7 +21,7 @@ export class UserController {
 
   @Get('/')
   async getAllUsers(@Req() req: any, @Res() res: Response) {
-    console.log(req.user)
+    console.log(req.user);
     const users = await this.userService.getAllUsers();
     return res.send({
       status: 'ok',
