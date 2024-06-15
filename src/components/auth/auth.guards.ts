@@ -8,12 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/helpers';
+import { UserService } from '@entities/user/user.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
+    private userService: UserService,
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,22 +26,50 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     if (isPublic) return true;
-    const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const request = await context.switchToHttp().getRequest();
+    const response = await context.switchToHttp().getResponse();
+    const token = request.cookies.assess; //this.extractTokenFromHeader(request);
     if (!token) throw new UnauthorizedException();
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payloadAssess = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+      if (payloadAssess) request['user'] = payloadAssess;
+    } catch (e) {
+      // TODO добавить рефреш токен
+      try {
+        const jwtRefresh = request.cookies.refresh;
+        const userId = parseInt(request.cookies.user);
+        if (jwtRefresh && userId) {
+          const getUserHash = await this.userService.getRefreshToken(userId);
+          const payloadRefresh = await this.jwtService.verifyAsync(jwtRefresh, {
+            secret: process.env.JWT_REFRESH + getUserHash,
+          });
+          if (payloadRefresh) {
+            this.authService.setAssessToken(
+              { sub: payloadRefresh.sub },
+              response,
+            );
+            this.authService.setRefreshToken(
+              {
+                sub: payloadRefresh.sub,
+              },
+              response,
+            );
+            return true;
+          }
+          throw new UnauthorizedException();
+        } else {
+          throw new UnauthorizedException();
+        }
+      } catch (e) {
+        throw new UnauthorizedException();
+      }
     }
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    // console.log('cookie', cookie)
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }

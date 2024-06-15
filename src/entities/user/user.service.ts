@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal } from 'typeorm';
+import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 
 import { User } from './user.entity';
@@ -14,6 +14,14 @@ export class UserService {
   ) {}
 
   public async createUser(userData: any) {
+    const exists = await this.userRepository.exists({
+      where: {
+        email: userData.email,
+      },
+    });
+    if (exists) {
+      throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
+    }
     const phoneUponReg = userData.phone;
     userData.phoneUponReg = phoneUponReg;
     const salt = await genSalt(12);
@@ -21,12 +29,18 @@ export class UserService {
       pepperIt(userData.password, phoneUponReg),
       salt,
     );
-
-    const newUser = this.userRepository.create({
-      ...userData,
-      password: hashedPassword,
-    });
-    return await this.userRepository.save(newUser);
+    try {
+      const newUser = this.userRepository.create({
+        ...userData,
+        password: hashedPassword,
+      });
+      return await this.userRepository.save(newUser);
+    } catch (e) {
+      throw new HttpException(
+        'Ошибка создания пользователя',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
   }
 
   public async getUserData(id: number) {
@@ -34,8 +48,8 @@ export class UserService {
   }
   public async getUserByEmail(email) {
     console.log(email);
-    return await this.userRepository.findOne({
-      where: { email: Equal(email) },
+    return await this.userRepository.findOneOrFail({
+      where: { email },
     });
   }
 
@@ -62,5 +76,24 @@ export class UserService {
       },
       body,
     );
+  }
+
+  public async updateRefreshToken(id: number, refreshToken: string) {
+    return await this.userRepository.update(
+      {
+        id,
+      },
+      {
+        refreshHash: refreshToken,
+      },
+    );
+  }
+
+  public async getRefreshToken(id: number) {
+    const userHash = await this.userRepository.findOneOrFail({
+      where: { id },
+      select: ['refreshHash'],
+    });
+    return userHash.refreshHash;
   }
 }

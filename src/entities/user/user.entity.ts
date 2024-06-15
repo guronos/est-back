@@ -40,6 +40,9 @@ export class User {
   @Column({ name: 'is_accepted_cookies', type: 'boolean', default: false })
   isAcceptedCookies: boolean;
 
+  @Column({ name: 'refresh_hash', type: 'varchar', nullable: true })
+  refreshHash: string;
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @OneToMany(() => Reminders, (reminder) => reminder.user)
   reminders: Reminders[];

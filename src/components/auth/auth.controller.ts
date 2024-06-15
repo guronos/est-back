@@ -23,18 +23,19 @@ export class AuthController {
   ) {
     console.log('cookie', cookies);
     const { email, password } = authData;
-    const isAuth = await this.authService.signIn(email, password);
+    const isAuth = await this.authService.signIn(email, password, res);
     if (!isAuth) {
       throw new HttpException(
         'Неверный логин или пароль',
         HttpStatus.UNAUTHORIZED,
       );
     } else {
-      res.cookie('name', String('Ivan'), {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 50, // 1 week
-        secure: true,
-      });
+      // TODO добавить рефреш
+      // res.cookie('refresh', String('Ivan'), {
+      //   httpOnly: true,
+      //   maxAge: 1000 * 60 * 60 * 24 * 50, // 1 week
+      //   secure: true,
+      // });
     }
     console.log('cookie', cookies);
     return isAuth;
