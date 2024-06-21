@@ -71,7 +71,7 @@ export class Reminders {
   dateUpdate: Date;
 
   @Column({ name: 'date_action', type: 'timestamp', nullable: true })
-  dateAction: Date;
+  dateAction: Date | string;
 
   @Column({ name: 'drop', type: 'boolean', default: false })
   drop: boolean;

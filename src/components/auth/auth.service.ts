@@ -49,7 +49,7 @@ export class AuthService {
       });
       res.cookie('assess', token, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 10,
+        maxAge: 1000 * 60 * 60 * 24 * 50,
         secure: true,
       });
       return true;
@@ -60,6 +60,7 @@ export class AuthService {
 
   public async setRefreshToken(payload, res) {
     try {
+      console.log('setuserToken', payload)
       const refreshTokenHash = crypto.randomBytes(64).toString('base64');
       const fullRefreshToken = process.env.JWT_REFRESH + refreshTokenHash;
       const saveToken = await this.userService.updateRefreshToken(

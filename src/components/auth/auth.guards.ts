@@ -29,11 +29,13 @@ export class AuthGuard implements CanActivate {
     const request = await context.switchToHttp().getRequest();
     const response = await context.switchToHttp().getResponse();
     const token = request.cookies.assess; //this.extractTokenFromHeader(request);
+    console.log('token', token);
     if (!token) throw new UnauthorizedException();
     try {
       const payloadAssess = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
+      console.log('payloadAssess', payloadAssess);
       if (payloadAssess) request['user'] = payloadAssess;
     } catch (e) {
       // TODO добавить рефреш токен
@@ -41,16 +43,19 @@ export class AuthGuard implements CanActivate {
         const jwtRefresh = request.cookies.refresh;
         const userId = parseInt(request.cookies.user);
         if (jwtRefresh && userId) {
+          console.log('getUserHash0');
           const getUserHash = await this.userService.getRefreshToken(userId);
+          console.log('getUserHash', getUserHash);
           const payloadRefresh = await this.jwtService.verifyAsync(jwtRefresh, {
             secret: process.env.JWT_REFRESH + getUserHash,
           });
+          console.log('payloadRefresh', payloadRefresh);
           if (payloadRefresh) {
-            this.authService.setAssessToken(
+            await this.authService.setAssessToken(
               { sub: payloadRefresh.sub },
               response,
             );
-            this.authService.setRefreshToken(
+            await this.authService.setRefreshToken(
               {
                 sub: payloadRefresh.sub,
               },

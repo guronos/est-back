@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
@@ -24,9 +25,11 @@ export class RemindersController {
     };
   }
 
-  @Get()
-  findAll() {
-    return this.remindersService.findAll();
+  @Post('/list')
+  findAll(@Body() body) {
+    // const filter = {query.dateStart, query.dateEnd};
+    console.log('findAll', body)
+    return this.remindersService.findAll(body);
   }
 
   @Get(':id')

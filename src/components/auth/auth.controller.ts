@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpCode,
   HttpException,
   HttpStatus,
   Post,
@@ -16,6 +17,7 @@ export class AuthController {
 
   @NonAuth()
   @Post()
+  @HttpCode(200)
   async signIn(
     @Res({ passthrough: true }) res,
     @Body() authData: Auth_Data_DTO,
@@ -29,15 +31,16 @@ export class AuthController {
         'Неверный логин или пароль',
         HttpStatus.UNAUTHORIZED,
       );
-    } else {
-      // TODO добавить рефреш
-      // res.cookie('refresh', String('Ivan'), {
-      //   httpOnly: true,
-      //   maxAge: 1000 * 60 * 60 * 24 * 50, // 1 week
-      //   secure: true,
-      // });
     }
     console.log('cookie', cookies);
     return isAuth;
+  }
+
+  @Post('/check')
+  @HttpCode(200)
+  async checkAuth() {
+    return {
+      authorized: true,
+    };
   }
 }

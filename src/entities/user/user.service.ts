@@ -44,7 +44,7 @@ export class UserService {
   }
 
   public async getUserData(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOneOrFail({ where: { id } });
   }
   public async getUserByEmail(email) {
     console.log(email);
