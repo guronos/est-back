@@ -9,7 +9,7 @@ export class CreateReminderDto {
   title: string;
   body: string;
   status: E_Status_Reminders;
-  dateAction: Date;
+  dateAction: string;
   author: number;
   user: User;
   priorityType: E_Priority_Reminders;

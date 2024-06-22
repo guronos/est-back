@@ -18,6 +18,7 @@ export class UserService {
       where: {
         email: userData.email,
       },
+      cache: true,
     });
     if (exists) {
       throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
@@ -44,12 +45,15 @@ export class UserService {
   }
 
   public async getUserData(id: number) {
-    return await this.userRepository.findOneOrFail({ where: { id } });
+    return await this.userRepository.findOneOrFail({
+      where: { id },
+    });
   }
   public async getUserByEmail(email) {
     console.log(email);
     return await this.userRepository.findOneOrFail({
       where: { email },
+      cache: true,
     });
   }
 
@@ -66,6 +70,7 @@ export class UserService {
         'phone',
         'sex',
       ],
+      cache: true,
     });
   }
 

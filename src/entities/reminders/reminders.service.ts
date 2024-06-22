@@ -4,7 +4,7 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reminders } from './reminders.entity';
 import { Repository, LessThanOrEqual, MoreThanOrEqual, Between } from 'typeorm';
-import { format, fromUnixTime, formatISO9075 } from 'date-fns';
+import { format, fromUnixTime, formatISO9075, endOfDay } from 'date-fns';
 import { formatWithOptions } from 'date-fns/fp';
 import { ru } from 'date-fns/locale';
 
@@ -16,21 +16,25 @@ export class RemindersService {
   ) {}
 
   public async create(createReminder: CreateReminderDto) {
-    console.log(createReminder);
-    const result = await this.remindersRepository.create(createReminder);
+    createReminder.dateAction = formatISO9075(
+      fromUnixTime(Number(createReminder.dateAction)),
+    );
+    const result = this.remindersRepository.create(createReminder);
     return await this.remindersRepository.save(result);
   }
 
   async findAll(payload: any) {
-    console.log(payload);
     const filter = payload.filter;
     const dateStart = formatISO9075(fromUnixTime(filter.dateStart));
-    const dateEnd = formatISO9075(fromUnixTime(filter.dateEnd));
-
+    const dateEnd = formatISO9075(endOfDay(fromUnixTime(filter.dateEnd)));
     const data = await this.remindersRepository.find({
       where: {
         dateAction: Between(dateStart, dateEnd),
       },
+      order: {
+        dateAction: 'ASC',
+      },
+      cache: true,
       select: [
         'title',
         'body',

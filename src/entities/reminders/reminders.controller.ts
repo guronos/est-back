@@ -16,7 +16,7 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 export class RemindersController {
   constructor(private readonly remindersService: RemindersService) {}
 
-  @Post()
+  @Post('/create')
   async create(@Body() createReminderDto: CreateReminderDto) {
     const result = await this.remindersService.create(createReminderDto);
     return {

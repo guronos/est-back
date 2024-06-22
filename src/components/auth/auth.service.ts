@@ -41,7 +41,7 @@ export class AuthService {
     }
   }
 
-  public async setAssessToken(payload, res) {
+  public async setAssessToken(payload, res: Response) {
     try {
       const token = await this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET,
@@ -60,7 +60,6 @@ export class AuthService {
 
   public async setRefreshToken(payload, res) {
     try {
-      console.log('setuserToken', payload)
       const refreshTokenHash = crypto.randomBytes(64).toString('base64');
       const fullRefreshToken = process.env.JWT_REFRESH + refreshTokenHash;
       const saveToken = await this.userService.updateRefreshToken(
