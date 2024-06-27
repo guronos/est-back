@@ -16,6 +16,8 @@ export class UpdateUserDTO {
   @IsString()
   password: string;
   @IsString()
+  passwordRepeat: string;
+  @IsString()
   firstName: string;
   @IsString()
   lastName: string;
@@ -25,6 +27,8 @@ export class UpdateUserDTO {
   birthDate: Date;
   @IsNotEmpty()
   sex: E_Sex;
+  @IsString()
+  city: string;
   @IsBoolean()
   isAcceptedCookies: boolean;
 }

@@ -6,6 +6,7 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
+import { formatISO9075, fromUnixTime } from "date-fns";
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
       },
       cache: true,
     });
+    console.log('exists', exists);
     if (exists) {
       throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
     }
@@ -31,11 +33,18 @@ export class UserService {
       salt,
     );
     try {
+      console.log('hashedPassword', hashedPassword);
       const newUser = this.userRepository.create({
         ...userData,
         password: hashedPassword,
+        birthDate: formatISO9075(fromUnixTime(userData.birthDate))
       });
-      return await this.userRepository.save(newUser);
+      console.log('newUser', newUser);
+      const saveUser = await this.userRepository.save(newUser);
+      console.log('saveUser', saveUser);
+      // TODO логика подтверждения email
+      // TODO выдача токенов
+      return saveUser;
     } catch (e) {
       throw new HttpException(
         'Ошибка создания пользователя',
@@ -44,12 +53,24 @@ export class UserService {
     }
   }
 
+  public async checkEmail(email: string) {
+    const exists = await this.userRepository.exists({
+      where: {
+        email: email,
+      },
+      cache: true,
+    });
+    if (exists) {
+      throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
+    } else return true;
+  }
+
   public async getUserData(id: number) {
     return await this.userRepository.findOneOrFail({
       where: { id },
     });
   }
-  public async getUserByEmail(email) {
+  public async getUserByEmail(email: string) {
     console.log(email);
     return await this.userRepository.findOneOrFail({
       where: { email },
@@ -65,7 +86,6 @@ export class UserService {
         'firstName',
         'id',
         'isAcceptedCookies',
-        'login',
         'middleName',
         'phone',
         'sex',
@@ -75,7 +95,7 @@ export class UserService {
   }
 
   public async updateUser(id: number, body: UpdateUserDTO) {
-    this.userRepository.update(
+    await this.userRepository.update(
       {
         id,
       },
