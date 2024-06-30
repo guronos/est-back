@@ -44,7 +44,7 @@ export class Reminders {
     name: 'status',
     type: 'enum',
     enum: E_Status_Reminders,
-    default: 1,
+    default: 'wait',
   })
   status: E_Status_Reminders;
 
@@ -52,7 +52,7 @@ export class Reminders {
     name: 'priority_type',
     type: 'enum',
     enum: E_Priority_Reminders,
-    default: 4,
+    default: 'low',
   })
   priorityType: E_Priority_Reminders;
 

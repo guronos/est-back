@@ -40,7 +40,7 @@ export class AuthController {
   @HttpCode(200)
   async checkAuth() {
     return {
-      authorized: true,
+      status: 200,
     };
   }
 }

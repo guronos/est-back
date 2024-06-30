@@ -48,7 +48,10 @@ export class RemindersService {
         'typeAction',
       ],
     });
-    return data;
+    console.log('findAll', data);
+    return {
+      data,
+    };
   }
 
   findOne(id: number) {

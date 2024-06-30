@@ -6,6 +6,7 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
+import { formatISO9075, fromUnixTime } from 'date-fns';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,7 @@ export class UserService {
     if (exists) {
       throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
     }
+    // userData.birthDate = formatISO9075(fromUnixTime(1719704251));
     const phoneUponReg = userData.phone;
     userData.phoneUponReg = phoneUponReg;
     const salt = await genSalt(12);
@@ -34,7 +36,9 @@ export class UserService {
       const newUser = this.userRepository.create({
         ...userData,
         password: hashedPassword,
+        birthDate: formatISO9075(fromUnixTime(userData.birthDate)),
       });
+      console.log('newUser', newUser);
       return await this.userRepository.save(newUser);
     } catch (e) {
       throw new HttpException(
@@ -65,7 +69,6 @@ export class UserService {
         'firstName',
         'id',
         'isAcceptedCookies',
-        'login',
         'middleName',
         'phone',
         'sex',

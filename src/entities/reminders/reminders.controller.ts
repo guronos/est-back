@@ -28,7 +28,6 @@ export class RemindersController {
   @Post('/list')
   findAll(@Body() body) {
     // const filter = {query.dateStart, query.dateEnd};
-    console.log('findAll', body)
     return this.remindersService.findAll(body);
   }
 

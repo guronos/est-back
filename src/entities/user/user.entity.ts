@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
 import { E_Sex } from './types';
 import { Reminders } from '@entities/reminders/reminders.entity';
 
@@ -6,9 +12,6 @@ import { Reminders } from '@entities/reminders/reminders.entity';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ name: 'login', type: 'varchar' })
-  login: string;
 
   @Column({ name: 'email', type: 'varchar', unique: true })
   email: string;
@@ -33,6 +36,9 @@ export class User {
 
   @Column({ name: 'birth_date', type: 'timestamp', nullable: true })
   birthDate: Date;
+
+  @CreateDateColumn({ name: 'date_create', type: 'timestamp' })
+  dateCreate: Date;
 
   @Column({ name: 'sex', type: 'enum', enum: E_Sex, nullable: true })
   sex: E_Sex | null;
