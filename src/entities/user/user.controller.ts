@@ -14,6 +14,7 @@ import {
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserDTO } from './dto/updateUser.dto';
+import { NonAuth } from "../../helpers";
 
 @Controller('users')
 export class UserController {
@@ -45,12 +46,20 @@ export class UserController {
     });
   }
 
-  @Post('/')
+  @NonAuth()
+  @Post('/create')
   // @UseInterceptors(FileInterceptor(''))
-  async createUser(@Req() req: Request, @Res() res: Response) {
-    const dbStatus = await this.userService.createUser(req.body);
+  async createUser(@Body() body) {
+    console.log(body);
+    const dbStatus = await this.userService.createUser(body);
     console.log(dbStatus);
-    return res.send({ body: 'rrr' });
+    if (dbStatus) return { message: 'Success' };
+    else return { message: 'Error' };
+  }
+
+  @Post('/checkEmail')
+  async checkEmail() {
+    // TODO добавить валидацию email
   }
 
   @Put('/:id')

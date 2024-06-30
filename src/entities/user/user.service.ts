@@ -7,6 +7,9 @@ import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
 import { formatISO9075, fromUnixTime } from 'date-fns';
+=======
+import { formatISO9075, fromUnixTime } from "date-fns";
+>>>>>>> 8127793fa43b082ced509e5c1a38bad3924d1c5d
 
 @Injectable()
 export class UserService {
@@ -21,6 +24,7 @@ export class UserService {
       },
       cache: true,
     });
+    console.log('exists', exists);
     if (exists) {
       throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
     }
@@ -33,9 +37,11 @@ export class UserService {
       salt,
     );
     try {
+      console.log('hashedPassword', hashedPassword);
       const newUser = this.userRepository.create({
         ...userData,
         password: hashedPassword,
+<<<<<<< HEAD
         birthDate: formatISO9075(fromUnixTime(userData.birthDate)),
       });
       console.log('newUser', newUser);
