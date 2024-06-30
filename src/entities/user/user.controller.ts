@@ -14,7 +14,7 @@ import {
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserDTO } from './dto/updateUser.dto';
-import { NonAuth } from "../../helpers";
+import { NonAuth } from '../../helpers';
 
 @Controller('users')
 export class UserController {

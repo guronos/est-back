@@ -6,11 +6,7 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
-import {<<<<<<< HEAD
 import { formatISO9075, fromUnixTime } from 'date-fns';
-=======
-import { formatISO9075, fromUnixTime } from "date-fns";
->>>>>>> 8127793fa43b082ced509e5c1a38bad3924d1c5d
 
 @Injectable()
 export class UserService {
@@ -29,7 +25,6 @@ export class UserService {
     if (exists) {
       throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
     }
-    // userData.birthDate = formatISO9075(fromUnixTime(1719704251));
     const phoneUponReg = userData.phone;
     userData.phoneUponReg = phoneUponReg;
     const salt = await genSalt(12);
@@ -42,13 +37,7 @@ export class UserService {
       const newUser = this.userRepository.create({
         ...userData,
         password: hashedPassword,
-<<<<<<< HEAD
         birthDate: formatISO9075(fromUnixTime(userData.birthDate)),
-      });
-      console.log('newUser', newUser);
-      return await this.userRepository.save(newUser);
-=======
-        birthDate: formatISO9075(fromUnixTime(userData.birthDate))
       });
       console.log('newUser', newUser);
       const saveUser = await this.userRepository.save(newUser);
@@ -56,7 +45,6 @@ export class UserService {
       // TODO логика подтверждения email
       // TODO выдача токенов
       return saveUser;
->>>>>>> 8127793fa43b082ced509e5c1a38bad3924d1c5d
     } catch (e) {
       throw new HttpException(
         'Ошибка создания пользователя',
@@ -108,7 +96,14 @@ export class UserService {
 
   public async updateUser(id: number, body: UpdateUserDTO) {
     await this.userRepository.update(
-Token(id: number, refreshToken: string) {
+      {
+        id,
+      },
+      body,
+    );
+  }
+
+  public async updateRefreshToken(id: number, refreshToken: string) {
     return await this.userRepository.update(
       {
         id,

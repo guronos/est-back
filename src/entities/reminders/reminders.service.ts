@@ -3,8 +3,8 @@ import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reminders } from './reminders.entity';
-import { Repository, LessThanOrEqual, MoreThanOrEqual, Between } from 'typeorm';
-import { format, fromUnixTime, formatISO9075, endOfDay } from 'date-fns';
+import { Repository, Between } from 'typeorm';
+import { fromUnixTime, formatISO9075, endOfDay } from 'date-fns';
 import { formatWithOptions } from 'date-fns/fp';
 import { ru } from 'date-fns/locale';
 
