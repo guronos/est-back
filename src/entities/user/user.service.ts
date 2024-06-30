@@ -6,6 +6,7 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
+import {<<<<<<< HEAD
 import { formatISO9075, fromUnixTime } from 'date-fns';
 =======
 import { formatISO9075, fromUnixTime } from "date-fns";
@@ -46,6 +47,16 @@ export class UserService {
       });
       console.log('newUser', newUser);
       return await this.userRepository.save(newUser);
+=======
+        birthDate: formatISO9075(fromUnixTime(userData.birthDate))
+      });
+      console.log('newUser', newUser);
+      const saveUser = await this.userRepository.save(newUser);
+      console.log('saveUser', saveUser);
+      // TODO логика подтверждения email
+      // TODO выдача токенов
+      return saveUser;
+>>>>>>> 8127793fa43b082ced509e5c1a38bad3924d1c5d
     } catch (e) {
       throw new HttpException(
         'Ошибка создания пользователя',
@@ -54,12 +65,24 @@ export class UserService {
     }
   }
 
+  public async checkEmail(email: string) {
+    const exists = await this.userRepository.exists({
+      where: {
+        email: email,
+      },
+      cache: true,
+    });
+    if (exists) {
+      throw new HttpException('E-mail уже занят', HttpStatus.UNAUTHORIZED);
+    } else return true;
+  }
+
   public async getUserData(id: number) {
     return await this.userRepository.findOneOrFail({
       where: { id },
     });
   }
-  public async getUserByEmail(email) {
+  public async getUserByEmail(email: string) {
     console.log(email);
     return await this.userRepository.findOneOrFail({
       where: { email },
@@ -84,15 +107,8 @@ export class UserService {
   }
 
   public async updateUser(id: number, body: UpdateUserDTO) {
-    this.userRepository.update(
-      {
-        id,
-      },
-      body,
-    );
-  }
-
-  public async updateRefreshToken(id: number, refreshToken: string) {
+    await this.userRepository.update(
+Token(id: number, refreshToken: string) {
     return await this.userRepository.update(
       {
         id,
