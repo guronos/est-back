@@ -49,7 +49,6 @@ export class User {
   @Column({ name: 'refresh_hash', type: 'varchar', nullable: true })
   refreshHash: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @OneToMany(() => Reminders, (reminder) => reminder.user)
   reminders: Reminders[];
 }

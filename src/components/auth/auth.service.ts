@@ -1,5 +1,5 @@
 import { UserService } from '@entities/user/user.service';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { compare } from 'bcrypt';
 import { pepperIt } from 'src/helpers';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +9,8 @@ import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
+    // @Inject(forwardRef(() => UserService))
+    // private userService: UserService,
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
@@ -20,23 +22,38 @@ export class AuthService {
   ): Promise<any> {
     try {
       const user = await this.userService.getUserByEmail(email);
-      if (!user) return false;
+      // if (!user) {
+      //   return {
+      //     errorUser: true,
+      //   };
+      // }
       const isMath = await compare(
         pepperIt(password, user.phoneUponReg),
         user.password,
       );
       if (!isMath) {
-        return false;
+        return {
+          statusCode: 401,
+          errorPassword: true,
+        };
       }
       const payload = { sub: user.id };
       const setAssess = await this.setAssessToken(payload, res);
       const setRefresh = await this.setRefreshToken(payload, res);
+      console.log(setRefresh, setAssess)
       if (setAssess && setRefresh) {
         return {
+          statusCode: 200,
           message: 'Success',
+          userId: user.id,
         };
       }
+      // throw new HttpException(
+      //   'Ошибка присвоения токенов',
+      //   HttpStatus.UNAUTHORIZED,
+      // );
     } catch (e) {
+      console.log('Error', e);
       return false;
     }
   }

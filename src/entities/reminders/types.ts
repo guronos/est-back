@@ -17,3 +17,8 @@ export enum E_Types_Actions {
   repair = 'repair',
   other = 'other',
 }
+
+export interface I_Filter_Find_All {
+  dateStart: number;
+  dateEnd: number;
+}

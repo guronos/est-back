@@ -29,7 +29,6 @@ export class Reminders {
   @Column({ name: 'author', type: 'int' })
   author: number;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @ManyToOne(() => User, (user) => user.reminders)
   user: User;
 
@@ -44,7 +43,7 @@ export class Reminders {
     name: 'status',
     type: 'enum',
     enum: E_Status_Reminders,
-    default: 'wait',
+    default: E_Status_Reminders.wait,
   })
   status: E_Status_Reminders;
 
@@ -52,7 +51,7 @@ export class Reminders {
     name: 'priority_type',
     type: 'enum',
     enum: E_Priority_Reminders,
-    default: 'low',
+    default: E_Priority_Reminders.low,
   })
   priorityType: E_Priority_Reminders;
 

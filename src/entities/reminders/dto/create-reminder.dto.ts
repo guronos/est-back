@@ -1,5 +1,5 @@
 import { User } from '@entities/user/user.entity';
-import {
+import type {
   E_Status_Reminders,
   E_Priority_Reminders,
   E_Types_Actions,

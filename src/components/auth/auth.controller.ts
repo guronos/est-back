@@ -8,7 +8,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Cookies, NonAuth } from 'src/helpers';
+import { Cookies, NonAuth } from "src/helpers";
 import { Auth_Data_DTO } from './dto/auth.dto';
 
 @Controller('auth')
@@ -21,26 +21,27 @@ export class AuthController {
   async signIn(
     @Res({ passthrough: true }) res,
     @Body() authData: Auth_Data_DTO,
-    @Cookies() cookies: any,
   ) {
-    console.log('cookie', cookies);
     const { email, password } = authData;
     const isAuth = await this.authService.signIn(email, password, res);
+    console.log('status', isAuth);
     if (!isAuth) {
       throw new HttpException(
-        'Неверный логин или пароль',
+        'Пользователь с указанным e-mail не зарегистрирован',
         HttpStatus.UNAUTHORIZED,
       );
+    } else if (isAuth.errorPassword) {
+      throw new HttpException('Неверный пароль', HttpStatus.UNAUTHORIZED);
     }
-    console.log('cookie', cookies);
     return isAuth;
   }
 
   @Post('/check')
   @HttpCode(200)
-  async checkAuth() {
+  async checkAuth(@Cookies() cookie) {
     return {
-      status: 200,
+      statusCode: 200,
+      userId: cookie.user,
     };
   }
 }

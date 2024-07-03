@@ -8,11 +8,13 @@ import {
 } from 'class-validator';
 import { E_Sex } from '../types';
 
-export class UpdateUserDTO {
+export class CreateUserDto {
   @IsEmail()
   email: string;
   @IsString()
   phone: string;
+  @IsString()
+  phoneUponReg: string;
   @IsString()
   password: string;
   @IsString()

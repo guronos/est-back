@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
@@ -6,15 +12,19 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from './user.entity';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { pepperIt } from 'src/helpers';
-import { formatISO9075, fromUnixTime } from 'date-fns';
+import { AuthService } from '@/components/auth/auth.service';
+import { Response } from 'express';
+import { CreateUserDto } from '@entities/user/dto/createUser.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    // @Inject(forwardRef(() => AuthService))
+    // private authService: AuthService,
   ) {}
 
-  public async createUser(userData: any) {
+  public async createUser(userData: CreateUserDto, res: Response) {
     const exists = await this.userRepository.exists({
       where: {
         email: userData.email,
@@ -37,13 +47,16 @@ export class UserService {
       const newUser = this.userRepository.create({
         ...userData,
         password: hashedPassword,
-        birthDate: formatISO9075(fromUnixTime(userData.birthDate)),
+        birthDate: userData.birthDate,
       });
       console.log('newUser', newUser);
       const saveUser = await this.userRepository.save(newUser);
-      console.log('saveUser', saveUser);
+      delete saveUser.password;
+      delete saveUser.refreshHash;
+      // console.log('saveUser', this.authService.signIn);
       // TODO логика подтверждения email
       // TODO выдача токенов
+      // await this.authService.signIn(userData.email, userData.password, res);
       return saveUser;
     } catch (e) {
       throw new HttpException(

@@ -15,6 +15,7 @@ import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserDTO } from './dto/updateUser.dto';
 import { NonAuth } from '../../helpers';
+import { CreateUserDto } from "@entities/user/dto/createUser.dto";
 
 @Controller('users')
 export class UserController {
@@ -49,12 +50,20 @@ export class UserController {
   @NonAuth()
   @Post('/create')
   // @UseInterceptors(FileInterceptor(''))
-  async createUser(@Body() body) {
+  async createUser(
+    @Res({ passthrough: true }) res: Response,
+    @Body() body: CreateUserDto,
+  ) {
     console.log(body);
-    const dbStatus = await this.userService.createUser(body);
-    console.log(dbStatus);
-    if (dbStatus) return { message: 'Success' };
-    else return { message: 'Error' };
+    const userData = await this.userService.createUser(body, res);
+    console.log(userData);
+    if (userData)
+      return {
+        statusCode: 200,
+        message: 'Success',
+        data: userData,
+      };
+    else return { message: 'Error', statusCode: 499 };
   }
 
   @Post('/checkEmail')
