@@ -1,24 +1,24 @@
 export enum E_Priority_Reminders {
-  critical = 'critical',
-  high = 'high',
-  medium = 'medium',
-  low = 'low',
+    critical = 'critical',
+    high = 'high',
+    medium = 'medium',
+    low = 'low',
 }
 
 export enum E_Status_Reminders {
-  wait = 'wait',
-  done = 'done',
-  overdue = 'overdue',
+    wait = 'wait',
+    done = 'done',
+    overdue = 'overdue',
 }
 
 export enum E_Types_Actions {
-  to = 'to',
-  plan = 'plan',
-  repair = 'repair',
-  other = 'other',
+    to = 'to',
+    plan = 'plan',
+    repair = 'repair',
+    other = 'other',
 }
 
 export interface I_Filter_Find_All {
-  dateStart: number;
-  dateEnd: number;
+    dateStart: number;
+    dateEnd: number;
 }

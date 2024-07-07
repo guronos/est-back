@@ -6,12 +6,12 @@ import { RemindersModule } from '@entities/reminders/reminders.module';
 import { AuthModule } from './components/auth/auth.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    TypeOrmModule,
-    UserModule,
-    RemindersModule,
-    AuthModule,
-  ],
+    imports: [
+        ConfigModule,
+        TypeOrmModule,
+        UserModule,
+        RemindersModule,
+        AuthModule,
+    ],
 })
 export class AppModule {}

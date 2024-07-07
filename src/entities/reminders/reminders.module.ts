@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reminders } from './reminders.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reminders])],
-  controllers: [RemindersController],
-  providers: [RemindersService],
+    imports: [TypeOrmModule.forFeature([Reminders])],
+    controllers: [RemindersController],
+    providers: [RemindersService],
 })
 export class RemindersModule {}
