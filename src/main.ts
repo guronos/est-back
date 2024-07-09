@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -11,6 +12,7 @@ async function bootstrap() {
             credentials: true,
         },
     });
+    app.use(helmet());
     //TODO off cors
     app.use(cookieParser());
     app.setGlobalPrefix('api');
@@ -29,7 +31,9 @@ async function bootstrap() {
     //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     //   next();
     // });
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(
+        new ValidationPipe({ whitelist: true, transform: true }),
+    );
     await app.listen(3000);
 }
 bootstrap();

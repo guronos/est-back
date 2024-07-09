@@ -11,6 +11,7 @@ import {
     E_Status_Reminders,
     E_Types_Actions,
 } from '@entities/reminders/types';
+import { User } from '@entities/user/user.entity';
 
 @Injectable()
 export class RemindersService {
@@ -20,10 +21,11 @@ export class RemindersService {
     ) {}
 
     public async create(createReminder: CreateReminderDto) {
+        console.log('createReminder', createReminder);
         try {
-            createReminder.dateAction = formatISO9075(
-                fromUnixTime(Number(createReminder.dateAction)),
-            );
+            // createReminder.dateAction = formatISO9075(
+            //     fromUnixTime(Number(createReminder.dateAction)),
+            // );
             // createReminder.status = E_Status_Reminders[createReminder.status];
             // createReminder.typeAction =
             //     E_Types_Actions[createReminder.typeAction];
@@ -78,12 +80,13 @@ export class RemindersService {
                     'dateAction',
                     'dateCreate',
                     'id',
-                    'user',
+                    'userId',
                     'priorityType',
                     'status',
                     'typeAction',
                 ],
             });
+            // data[user]
             console.log('findAll', data);
             return {
                 data,
@@ -96,12 +99,17 @@ export class RemindersService {
         }
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} reminder`;
-    }
-
-    update(id: number, updateReminderDto: UpdateReminderDto) {
-        return `This action updates a #${id} reminder`;
+    async update(updateReminderDto: UpdateReminderDto) {
+        const { id, ...data } = updateReminderDto;
+        // await this.remindersRepository.update(id, data);
+        const specimen = await this.remindersRepository.findOne({
+            where: { id },
+        });
+        const result = await this.remindersRepository.save({ ...specimen, ...data });
+        return {
+            statusCode: 200,
+            data: result,
+        };
     }
 
     async remove(id: string) {

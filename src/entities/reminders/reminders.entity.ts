@@ -35,6 +35,8 @@ export class Reminders {
     })
     user: User;
 
+    @Column({ nullable: true })
+    userId: number;
     // @OneToOne((type) => User, (user) => user.reminders)
     // user: User;
     // @RelationId((reminders: Reminders) => reminders.user) // it still requires the presence of the `category` proeprty

@@ -1,5 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { formatISO, fromUnixTime } from 'date-fns';
 
 export const pepperIt = (food, shaker) => {
     const array = shaker.split('');
@@ -31,6 +32,10 @@ const getPepper = (arr) => {
     return keys;
 };
 
+export const getCorrectData = ({ value }) => {
+    if (!isNaN(parseInt(value))) return formatISO(fromUnixTime(Number(value)))
+    return value;
+};
 export const IS_PUBLIC_KEY = 'isPublic';
 export const NonAuth = () => SetMetadata(IS_PUBLIC_KEY, true);
 

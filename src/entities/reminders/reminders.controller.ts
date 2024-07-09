@@ -5,7 +5,7 @@ import {
     Body,
     Patch,
     Param,
-    Delete,
+    Delete, ValidationPipe, UsePipes,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
@@ -17,7 +17,10 @@ export class RemindersController {
     constructor(private readonly remindersService: RemindersService) {}
 
     @Post('/create')
-    async create(@Body() createReminderDto: CreateReminderDto) {
+    async create(
+        @Body() createReminderDto: CreateReminderDto,
+    ) {
+        console.log('cont', createReminderDto);
         const result = await this.remindersService.create(createReminderDto);
         return {
             status: 'ok',
@@ -26,24 +29,19 @@ export class RemindersController {
     }
 
     @Post('/list')
-    findAll(@Body() body, @Cookies() cookie) {
+    async findAll(@Body() body, @Cookies() cookie) {
         console.log('body', cookie.user);
         const userId: number = Number(cookie.user);
         // const filter = {query.dateStart, query.dateEnd};
-        return this.remindersService.findAll(body, userId);
+        return await this.remindersService.findAll(body, userId);
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.remindersService.findOne(+id);
-    }
-
-    @Patch(':id')
-    update(
-        @Param('id') id: string,
+    @Patch('/update')
+    async update(
         @Body() updateReminderDto: UpdateReminderDto,
     ) {
-        return this.remindersService.update(+id, updateReminderDto);
+        //TODO редактирование карточки
+        return await this.remindersService.update(updateReminderDto);
     }
 
     @Delete(':id')
