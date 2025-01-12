@@ -3,7 +3,7 @@ import {
     E_Status_Reminders,
     E_Priority_Reminders,
     E_Types_Actions,
-} from '../types';
+} from '@entities/enums/enums';
 import { IsEmpty, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { getCorrectData } from '@/helpers';

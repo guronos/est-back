@@ -10,7 +10,7 @@ import {
     E_Priority_Reminders,
     E_Status_Reminders,
     E_Types_Actions,
-} from '@entities/reminders/types';
+} from '@entities/enums/enums';
 import { User } from '@entities/user/user.entity';
 
 @Injectable()
@@ -105,7 +105,10 @@ export class RemindersService {
         const specimen = await this.remindersRepository.findOne({
             where: { id },
         });
-        const result = await this.remindersRepository.save({ ...specimen, ...data });
+        const result = await this.remindersRepository.save({
+            ...specimen,
+            ...data,
+        });
         return {
             statusCode: 200,
             data: result,

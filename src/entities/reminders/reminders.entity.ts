@@ -13,7 +13,7 @@ import {
     E_Priority_Reminders,
     E_Status_Reminders,
     E_Types_Actions,
-} from './types';
+} from '@entities/enums/enums';
 import { City } from '@entities/staticData/cities/cities.entity';
 
 @Entity('reminders')
